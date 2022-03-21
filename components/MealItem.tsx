@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Meal from "../models/meal";
+import DefaultText from "./DefaultText";
 
 interface MealItemProps {
   onSelect?: () => void;
@@ -26,8 +26,8 @@ const MealItem = ({
   image,
 }: MealItemProps) => {
   return (
-    <View style={styles.mealItem}>
-      <TouchableOpacity onPress={onSelect}>
+    <TouchableNativeFeedback onPress={onSelect}>
+      <View style={styles.mealItem}>
         <View style={{ ...styles.mealRow, ...styles.mealHeader }}>
           <ImageBackground source={{ uri: image }} style={styles.bgImage}>
             <Text numberOfLines={1} style={styles.title}>
@@ -36,23 +36,24 @@ const MealItem = ({
           </ImageBackground>
         </View>
         <View style={{ ...styles.mealRow, ...styles.mealDetails }}>
-          <Text>{duration}m</Text>
-          <Text>{complexity.toUpperCase()}</Text>
-          <Text>{affordability.toUpperCase()}</Text>
+          <DefaultText>{duration}m</DefaultText>
+          <DefaultText>{complexity.toUpperCase()}</DefaultText>
+          <DefaultText>{affordability.toUpperCase()}</DefaultText>
         </View>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableNativeFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   mealItem: {
     height: 220,
-    width: "100%",
+    width: "95%",
     backgroundColor: "#f5f5f5",
     borderRadius: 10,
     overflow: "hidden",
     marginVertical: 10,
+    elevation: 5,
   },
   mealRow: { flexDirection: "row" },
   mealHeader: {

@@ -1,13 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Image } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import {
   NavigationStackProp,
   NavigationStackScreenComponent,
 } from "react-navigation-stack";
+import DefaultText from "../components/DefaultText";
+import CustomHeaderButton from "../components/HeaderButton";
 import { MEALS } from "../data/dummy-data";
 
 interface MealDetailsScreenProps {
   navigation: NavigationStackProp;
 }
+
+const ListItem = ({ children }: { children: string }) => {
+  return (
+    <View style={styles.listItem}>
+      <DefaultText>{children}</DefaultText>
+    </View>
+  );
+};
 
 const MealDetailsScreen = ({ navigation }: MealDetailsScreenProps) => {
   const mealId = navigation.getParam("mealId");
@@ -15,9 +27,25 @@ const MealDetailsScreen = ({ navigation }: MealDetailsScreenProps) => {
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
   return (
-    <View style={styles.screen}>
-      <Text>The Meal Details Screen! {selectedMeal?.title}</Text>
-    </View>
+    <ScrollView>
+      <Image source={{ uri: selectedMeal?.imageURL }} style={styles.image} />
+
+      <View style={styles.details}>
+        <DefaultText>{selectedMeal?.duration}m</DefaultText>
+        <DefaultText>{selectedMeal?.complexity.toUpperCase()}</DefaultText>
+        <DefaultText>{selectedMeal?.affordability.toUpperCase()}</DefaultText>
+      </View>
+
+      <Text style={styles.title}>Ingredientes</Text>
+      {selectedMeal?.ingredientes.map((ingredient) => (
+        <ListItem key={ingredient}>{ingredient}</ListItem>
+      ))}
+
+      <Text style={styles.title}>Steps</Text>
+      {selectedMeal?.steps.map((step) => (
+        <ListItem key={step}>{step}</ListItem>
+      ))}
+    </ScrollView>
   );
 };
 
@@ -30,14 +58,39 @@ const MealDetailsScreen = ({ navigation }: MealDetailsScreenProps) => {
 
   return {
     headerTitle: selectedMeal?.title,
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+        <Item
+          title="Favorite"
+          iconName="ios-star"
+          onPress={() => console.log("Foi")}
+        />
+      </HeaderButtons>
+    ),
   };
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  image: {
+    width: "100%",
+    height: 200,
+  },
+  details: {
+    flexDirection: "row",
+    padding: 15,
+    justifyContent: "space-around",
+  },
+  title: {
+    fontFamily: "open-sans-bold",
+    fontSize: 22,
+    textAlign: "center",
+  },
+  listItem: {
+    marginVertical: 10,
+    marginHorizontal: 20,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    padding: 10,
   },
 });
 

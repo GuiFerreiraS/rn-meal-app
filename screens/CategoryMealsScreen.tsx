@@ -12,6 +12,7 @@ import {
   NavigationStackScreenComponent,
 } from "react-navigation-stack";
 import MealItem from "../components/MealItem";
+import MealList from "../components/MealList";
 import { CATEGORIES, MEALS } from "../data/dummy-data";
 import Meal from "../models/meal";
 
@@ -26,37 +27,7 @@ const CategoryMealScreen = ({ navigation }: CategoryMealScreenProps) => {
     (meal) => meal.categoryIds.indexOf(catId) >= 0
   );
 
-  const renderMealItem: ListRenderItem<Meal> = (itemData) => (
-    <MealItem
-      title={itemData.item.title}
-      onSelect={() =>
-        navigation.navigate({
-          routeName: "MealDetail",
-          params: { mealId: itemData.item.id },
-        })
-      }
-      duration={itemData.item.duration}
-      complexity={itemData.item.complexity}
-      affordability={itemData.item.affordability}
-      image={itemData.item.imageURL}
-    />
-  );
-
-  return (
-    <View style={styles.screen}>
-      <StatusBar
-        translucent={true}
-        barStyle="light-content"
-        backgroundColor="transparent"
-      ></StatusBar>
-      <FlatList
-        data={displayedMeals}
-        keyExtractor={(item, index) => item.id}
-        renderItem={renderMealItem}
-        style={{ width: "100%" }}
-      />
-    </View>
-  );
+  return <MealList listData={displayedMeals} navigation={navigation} />;
 };
 
 (CategoryMealScreen as NavigationStackScreenComponent).navigationOptions = (
@@ -71,13 +42,6 @@ const CategoryMealScreen = ({ navigation }: CategoryMealScreenProps) => {
   };
 };
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 10,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default CategoryMealScreen;

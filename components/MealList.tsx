@@ -1,3 +1,4 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   FlatList,
   ListRenderItem,
@@ -5,13 +6,12 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { NavigationStackProp } from "react-navigation-stack";
 import Meal from "../models/meal";
 import MealItem from "./MealItem";
 
 interface MealListProps {
   listData: Meal[];
-  navigation: NavigationStackProp;
+  navigation: StackNavigationProp<{ MealDetail: { mealId: string } }>;
 }
 
 const MealList = ({ listData, navigation }: MealListProps) => {
@@ -20,7 +20,7 @@ const MealList = ({ listData, navigation }: MealListProps) => {
       title={itemData.item.title}
       onSelect={() =>
         navigation.navigate({
-          routeName: "MealDetail",
+          name: "MealDetail",
           params: { mealId: itemData.item.id },
         })
       }

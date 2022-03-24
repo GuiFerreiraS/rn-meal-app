@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
-import { NavigationDrawerProp } from "react-navigation-drawer";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/HeaderButton";
 import colors from "../constants/colors";
@@ -30,7 +30,7 @@ const FiltersSwitch = ({
 const FiltersScreen = ({
   navigation,
 }: {
-  navigation: NavigationDrawerProp;
+  navigation: StackNavigationProp<{ Filters: { save: () => void } }>;
 }) => {
   const [isGlutenFree, setIsGlutenFree] = useState(false);
   const [isLactoseFree, setIsLactoseFree] = useState(false);
@@ -48,9 +48,15 @@ const FiltersScreen = ({
     console.log(appliedFilters);
   }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian]);
 
-  useEffect(() => {
-    navigation.setParams({ save: saveFilters });
-  }, [saveFilters]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item title="Save" iconName="ios-save" onPress={saveFilters} />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation, saveFilters]);
 
   return (
     <View style={styles.screen}>
@@ -78,29 +84,6 @@ const FiltersScreen = ({
     </View>
   );
 };
-
-(FiltersScreen as any).navigationOptions = (navigationData: any) => ({
-  headerRight: () => (
-    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-      <Item
-        title="Save"
-        iconName="ios-save"
-        onPress={navigationData.navigation.getParam("save")}
-      />
-    </HeaderButtons>
-  ),
-  headerLeft: () => (
-    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-      <Item
-        title="Menu"
-        iconName="ios-menu"
-        onPress={() => {
-          navigationData.navigation.toggleDrawer();
-        }}
-      />
-    </HeaderButtons>
-  ),
-});
 
 const styles = StyleSheet.create({
   screen: {

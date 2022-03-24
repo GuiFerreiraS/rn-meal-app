@@ -1,45 +1,22 @@
-import {
-  Button,
-  FlatList,
-  ListRenderItem,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import {
-  NavigationStackProp,
-  NavigationStackScreenComponent,
-} from "react-navigation-stack";
-import MealItem from "../components/MealItem";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StyleSheet } from "react-native";
 import MealList from "../components/MealList";
-import { CATEGORIES, MEALS } from "../data/dummy-data";
-import Meal from "../models/meal";
+import { MEALS } from "../data/dummy-data";
 
 interface CategoryMealScreenProps {
-  navigation: NavigationStackProp;
+  navigation: StackNavigationProp<{ MealDetail: { mealId: string } }>;
+  route: RouteProp<{ CategoryMeals: { categoryId: string } }>;
 }
 
-const CategoryMealScreen = ({ navigation }: CategoryMealScreenProps) => {
-  const catId = navigation.getParam("categoryId");
+const CategoryMealScreen = ({ navigation, route }: CategoryMealScreenProps) => {
+  const catId = route?.params?.categoryId;
 
   const displayedMeals = MEALS.filter(
     (meal) => meal.categoryIds.indexOf(catId) >= 0
   );
 
   return <MealList listData={displayedMeals} navigation={navigation} />;
-};
-
-(CategoryMealScreen as NavigationStackScreenComponent).navigationOptions = (
-  navigationData
-) => {
-  const catId = navigationData.navigation.getParam("categoryId");
-
-  const selectedCategory = CATEGORIES.find((cat) => cat.id === catId);
-
-  return {
-    headerTitle: selectedCategory?.title,
-  };
 };
 
 const styles = StyleSheet.create({});

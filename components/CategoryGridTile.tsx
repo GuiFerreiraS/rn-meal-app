@@ -1,6 +1,4 @@
-import { StyleSheet, Text, TouchableNativeFeedback, View } from "react-native";
-import { NavigationStackProp } from "react-navigation-stack";
-import Category from "../models/category";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface CategoryGridTileProps {
   onSelect: () => void;
@@ -14,23 +12,33 @@ const CategoryGridTile = ({
   color,
 }: CategoryGridTileProps) => {
   return (
-    <TouchableNativeFeedback onPress={onSelect}>
-      <View style={{ ...styles.gridItem, backgroundColor: color }}>
-        <Text style={styles.title} numberOfLines={2}>
-          {title}
-        </Text>
-      </View>
-    </TouchableNativeFeedback>
+    <View style={styles.buttonView}>
+      <Pressable
+        android_ripple={{ color: "#ccc" }}
+        style={{ ...styles.gridItem, backgroundColor: color }}
+        onPress={onSelect}
+      >
+        <View>
+          <Text style={styles.title} numberOfLines={2}>
+            {title}
+          </Text>
+        </View>
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  gridItem: {
+  buttonView: {
+    borderRadius: 10,
     flex: 1,
+    overflow: "hidden",
     margin: 15,
+    elevation: 5,
+  },
+  gridItem: {
     height: 150,
     borderRadius: 10,
-    elevation: 5,
     padding: 15,
     justifyContent: "flex-end",
     alignItems: "flex-end",

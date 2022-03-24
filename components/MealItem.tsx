@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   TouchableNativeFeedback,
-  TouchableOpacity,
   View,
 } from "react-native";
 import DefaultText from "./DefaultText";

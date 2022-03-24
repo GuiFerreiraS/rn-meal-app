@@ -1,16 +1,17 @@
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useLayoutEffect } from "react";
 import { Image } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import {
-  NavigationStackProp,
-  NavigationStackScreenComponent,
-} from "react-navigation-stack";
 import DefaultText from "../components/DefaultText";
 import CustomHeaderButton from "../components/HeaderButton";
 import { MEALS } from "../data/dummy-data";
+import { useFavoriteContext } from "../store/context/favorites-context";
 
 interface MealDetailsScreenProps {
-  navigation: NavigationStackProp;
+  route: RouteProp<{ MealDetail: { mealId: string } }>;
+  navigation: StackNavigationProp<{ MealDetail: {} }>;
 }
 
 const ListItem = ({ children }: { children: string }) => {
@@ -21,10 +22,31 @@ const ListItem = ({ children }: { children: string }) => {
   );
 };
 
-const MealDetailsScreen = ({ navigation }: MealDetailsScreenProps) => {
-  const mealId = navigation.getParam("mealId");
+const MealDetailsScreen = ({ route, navigation }: MealDetailsScreenProps) => {
+  const mealId = route?.params?.mealId;
+  const { addFavorite, removeFavorite, ids } = useFavoriteContext();
+
+  const mealIsFavorite = ids.includes(mealId);
 
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+            title="Favorite"
+            iconName={mealIsFavorite ? "star" : "star-outline"}
+            onPress={
+              mealIsFavorite
+                ? removeFavorite.bind(this, mealId)
+                : addFavorite.bind(this, mealId)
+            }
+          />
+        </HeaderButtons>
+      ),
+    });
+  });
 
   return (
     <ScrollView>
@@ -47,27 +69,6 @@ const MealDetailsScreen = ({ navigation }: MealDetailsScreenProps) => {
       ))}
     </ScrollView>
   );
-};
-
-(MealDetailsScreen as NavigationStackScreenComponent).navigationOptions = (
-  navigationData
-) => {
-  const catId = navigationData.navigation.getParam("mealId");
-
-  const selectedMeal = MEALS.find((cat) => cat.id === catId);
-
-  return {
-    headerTitle: selectedMeal?.title,
-    headerRight: () => (
-      <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-        <Item
-          title="Favorite"
-          iconName="ios-star"
-          onPress={() => console.log("Foi")}
-        />
-      </HeaderButtons>
-    ),
-  };
 };
 
 const styles = StyleSheet.create({
